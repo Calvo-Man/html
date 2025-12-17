@@ -284,7 +284,7 @@
       function iniciarEmojiRebelde() {
         const rebelde = document.getElementById("emojiRebelde");
         const msg = document.getElementById("msgRebelde");
-
+        rebelde.style.display = "block";
         let huyendo = false;
 
         function huir() {
@@ -321,6 +321,7 @@
 
         // si logran tocarlo
         rebelde.addEventListener("click", () => {
+          msg.style.display = "block";
           rebelde.innerText = "😵‍💫";
           rebelde.style.transform = "scale(1.6)";
           msg.innerText = "ok ok… ya 😵‍💫";
@@ -384,6 +385,7 @@
           charActual = 0;
           setTimeout(escribirTexto, 500);
           tic.pause();
+          iniciarEmojiRebelde();
         }
       }
       function finalFalso() {
@@ -416,7 +418,6 @@
 
         iniciarMusica();
         setInterval(crearConfeti, 250);
-        iniciarEmojiRebelde();
         escribirTexto();
       }
 
