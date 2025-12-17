@@ -242,27 +242,25 @@
       >
         😳 Ey ey… calmate no soy maraca 😂
       </div>
+      <div
+        id="msgRebelde"
+        style="
+          display: none;
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #fff;
+          padding: 10px 16px;
+          border-radius: 20px;
+          font-size: 14px;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+          z-index: 9999;
+        "
+      >
+      </div>
     </div>
     <div id="emojiRebelde">🎂</div>
-
-    <div
-      id="msgRebelde"
-      style="
-        display: none;
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #fff;
-        padding: 10px 16px;
-        border-radius: 20px;
-        font-size: 14px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-        z-index: 9999;
-      "
-    >
-      eh… tengo 30k para la torta 🎂
-    </div>
 
     <script>
       // 🎉 confeti
@@ -330,7 +328,7 @@
 
           setTimeout(() => {
             rebelde.style.display = "none";
-            msg.style.display = "none";
+            msg.innerText = "eh… tengo 30k para la torta 🎂";
           }, 1500);
         });
       }
