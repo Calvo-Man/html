@@ -206,9 +206,9 @@ function finalFalso() {
 function comenzarFiesta() {
   document.getElementById("inicio").style.display = "none";
   document.getElementById("contenido").style.display = "block";
-
   iniciarMusica();
   setInterval(crearConfeti, 250);
+  nombreReactivo();
   escribirTexto();
 }
 
