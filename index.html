@@ -3,36 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Carta Navideña 💖</title>
+    <title>Feliz Cumpleaños 🎂</title>
 
     <style>
       body {
         margin: 0;
         min-height: 100vh;
-        background: linear-gradient(to bottom, #8b0000, #013220);
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
+        background: linear-gradient(to bottom, #ff6f91, #845ec2);
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 16px;
+        overflow: hidden;
       }
 
       .card {
-        background: #fffdf5;
+        background: #fffaf5;
         width: 100%;
         max-width: 420px;
-        border-radius: 22px;
+        border-radius: 24px;
         padding: 22px;
-        box-shadow: 0 18px 35px rgba(0, 0, 0, 0.35);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
         text-align: center;
-        animation: entrar 0.8s ease;
+        position: relative;
+        z-index: 2;
+        animation: entrar 0.6s ease;
+      }
+      #textoEscribiendo {
+        font-size: 16px;
+        color: #333;
+
+        white-space: pre-line;
+        min-height: 140px;
+        margin-top: 12px;
       }
 
       @keyframes entrar {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(30px);
         }
         to {
           opacity: 1;
@@ -41,20 +51,19 @@
       }
 
       .emoji {
-        font-size: 42px;
-        margin-bottom: 6px;
+        font-size: 44px;
+        margin-bottom: 10px;
       }
 
       .nombre {
         font-size: 30px;
-        color: #8b0000;
+        color: #ff4d6d;
         margin: 6px 0;
-        line-height: 1.2;
       }
 
       .subtitulo {
         font-size: 15px;
-        color: #006400;
+        color: #6a0572;
         margin-bottom: 14px;
       }
 
@@ -68,22 +77,18 @@
       button {
         width: 100%;
         padding: 14px;
-        border-radius: 26px;
+        border-radius: 28px;
         border: none;
-        background: #006400;
+        background: #ff4d6d;
         color: #fff;
         font-size: 16px;
         font-weight: 600;
         cursor: pointer;
-        margin-top: 10px;
+        margin-top: 12px;
       }
 
-      .extra {
+      .contenido {
         display: none;
-        margin-top: 14px;
-        font-size: 15px;
-        font-weight: 600;
-        color: #8b0000;
         animation: fade 0.6s ease;
       }
 
@@ -96,118 +101,275 @@
         }
       }
 
-      /* ❄️ NIEVE */
-      .snow {
+      /* 🎉 confeti */
+      .confetti {
         position: fixed;
         top: -10px;
-        color: white;
-        font-size: 14px;
+        font-size: 18px;
         animation: fall linear infinite;
-        opacity: 0.8;
         pointer-events: none;
+        z-index: 1;
       }
 
       @keyframes fall {
         to {
-          transform: translateY(110vh);
+          transform: translateY(110vh) rotate(360deg);
+        }
+      }
+      .tiembla {
+        display: inline-block;
+        animation: shake 0.4s ease-in-out;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-2px);
+        }
+        50% {
+          transform: translateX(2px);
+        }
+        75% {
+          transform: translateX(-2px);
+        }
+        100% {
+          transform: translateX(0);
         }
       }
 
-      /* 🎵 botón música */
-      .music {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 50%;
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        cursor: pointer;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      .salta {
+        display: inline-block;
+        animation: jump 0.5s ease;
+      }
+
+      @keyframes jump {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+        100% {
+          transform: translateY(0);
+        }
       }
     </style>
   </head>
   <body>
     <!-- 🎵 Música -->
     <audio id="musica" loop>
+      <source src="./happy-birthday-404431.mp3" type="audio/mpeg" />
+    </audio>
+    <audio id="tic">
       <source
-        src="we-wish-you-a-merry-christmas-444573.mp3"
+        src="https://cdn.pixabay.com/audio/2022/03/15/audio_8c2b3d49c1.mp3"
         type="audio/mpeg"
       />
     </audio>
 
-    <div class="music" onclick="toggleMusica()">🎵</div>
-
     <div class="card">
-      <div class="emoji">🎄🙏</div>
+      <!-- PANTALLA INICIAL -->
+      <div id="inicio">
+        <div class="emoji">🤔</div>
+        <p><strong>Pregunta importante…</strong></p>
+        <p>¿Sabes qué día es hoy?</p>
+        <button onclick="comenzarFiesta()">Averiguarlo 🎁</button>
+      </div>
 
-      <!-- 👉 CAMBIA AQUÍ EL NOMBRE -->
-      <div class="nombre">María</div>
-      <div class="subtitulo">Un mensaje con cariño y fe</div>
+      <!-- CONTENIDO REAL -->
+      <div class="contenido" id="contenido">
+        <div class="emoji">🎉🎂</div>
+        <div class="nombre" onclick="nombreReactivo()">Yiseth</div>
 
-      <p>
-        Querida María,<br /><br />
-        En esta Navidad quiero recordarte lo valiosa que eres. Tu amistad es un
-        regalo de Dios, una bendición que llena de paz y alegría mi corazón.
-      </p>
+        <div class="subtitulo">Hoy celebramos tu vida</div>
 
-      <p>
-        Que el nacimiento de Jesús renueve tu fe, te llene de esperanza y te
-        acompañe en cada paso. Que Dios te cubra con Su amor hoy y siempre.
-      </p>
-
-      <button onclick="mostrarMensaje()">Ver mensaje especial 🎁</button>
-
-      <div class="extra" id="mensaje">
-        ✝️ Que el Señor te bendiga y te guarde, haga resplandecer Su rostro
-        sobre ti y te conceda paz 🙏✨
+        <div id="textoEscribiendo"></div>
+      </div>
+      <div
+        id="shakeMsg"
+        style="
+          display: none;
+          font-size: 14px;
+          margin-top: 10px;
+          color: #845ec2;
+          font-weight: 600;
+        "
+      >
+        😳 Ey ey… calmate no soy maraca 😂
       </div>
     </div>
 
     <script>
-      // Iniciar música al cargar
-      // ❄️ nieve
-      function crearNieve() {
-        const snow = document.createElement("div");
-        snow.className = "snow";
-        snow.innerText = "❄";
-        snow.style.left = Math.random() * 100 + "vw";
-        snow.style.animationDuration = 4 + Math.random() * 5 + "s";
-        snow.style.fontSize = 10 + Math.random() * 18 + "px";
-        document.body.appendChild(snow);
-
-        setTimeout(() => snow.remove(), 9000);
-      }
-      setInterval(crearNieve, 300);
-
-      // 🎁 mensaje
-      function mostrarMensaje() {
-        document.getElementById("mensaje").style.display = "block";
+      // 🎉 confeti
+      const emojis = ["🎉", "🎊", "✨", "💖", "🎈"];
+      function crearConfeti() {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.animationDuration = 4 + Math.random() * 5 + "s";
+        c.style.fontSize = 14 + Math.random() * 20 + "px";
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 9000);
       }
 
       // 🎵 música
-      let on = false;
-
-      function iniciarMusicaPorToque() {
-        if (on) return;
-
+      let musicaOn = false;
+      function iniciarMusica() {
+        if (musicaOn) return;
         const m = document.getElementById("musica");
-        m.play()
-          .then(() => {
-            on = true;
-            document.removeEventListener("touchstart", iniciarMusicaPorToque);
-            document.removeEventListener("click", iniciarMusicaPorToque);
-          })
-          .catch(() => {});
+        m.play().catch(() => {});
+        musicaOn = true;
       }
 
-      // Primer toque en pantalla
-      document.addEventListener("touchstart", iniciarMusicaPorToque);
-      document.addEventListener("click", iniciarMusicaPorToque);
+      // ✍️ TEXTO QUE SE ESCRIBE SOLO
+      const lineas = [
+        { texto: "Hoy celebramos que existes 😄", efecto: "salta" },
+        { texto: "que haces reír, que acompañas", efecto: "" },
+        { texto: "y que haces los días más llevaderos.", efecto: "tiembla" },
+        { texto: "Que este nuevo año venga con", efecto: "" },
+        { texto: "risas, aventuras, comida rica", efecto: "salta" },
+        { texto: "y cero estrés innecesario 😌", efecto: "tiembla" },
+        { texto: "¡Feliz cumpleaños! 🎂✨", efecto: "salta" },
+      ];
+
+      let lineaActual = 0;
+      let charActual = 0;
+
+      function escribirTexto() {
+        if (lineaActual >= lineas.length) {
+            setTimeout(finalFalso, 1500);
+            return;
+          }
+
+        const contenedor = document.getElementById("textoEscribiendo");
+        const tic = document.getElementById("tic");
+        const linea = lineas[lineaActual].texto;
+        const efecto = lineas[lineaActual].efecto;
+
+        if (charActual < linea.length) {
+          contenedor.innerHTML += linea.charAt(charActual);
+          tic.currentTime = 0;
+          tic.play().catch(() => {});
+          charActual++;
+          setTimeout(escribirTexto, 40);
+        } else {
+          contenedor.innerHTML += `<span class="${efecto}">\n\n</span>`;
+          lineaActual++;
+          charActual = 0;
+          setTimeout(escribirTexto, 500);
+         
+        }
+      }
+      function finalFalso() {
+        const contenedor = document.getElementById("textoEscribiendo");
+
+        const falso = document.createElement("div");
+        falso.innerText = "…";
+        falso.style.fontSize = "24px";
+        falso.style.marginTop = "10px";
+        contenedor.appendChild(falso);
+
+        setTimeout(() => {
+          falso.innerText = "Ah… espera 👀";
+        }, 1200);
+        setTimeout(() => {
+          falso.innerText = "Una cosa más 🤔";
+        }, 1800);
+
+        setTimeout(() => {
+          falso.innerText = "Feliz cumpleaños 🎉";
+          for (let i = 0; i < 25; i++) crearConfeti();
+          vibrarFinal();
+        }, 2500);
+      }
+
+      // 🚀 botón inicial
+      function comenzarFiesta() {
+        document.getElementById("inicio").style.display = "none";
+        document.getElementById("contenido").style.display = "block";
+
+        iniciarMusica();
+        setInterval(crearConfeti, 250);
+        escribirTexto();
+      }
+      function vibrarFinal() {
+        if (navigator.vibrate) {
+          navigator.vibrate([200, 100, 200, 100, 400]);
+        }
+      }
+      let lastShake = 0;
+
+      if (window.DeviceMotionEvent) {
+        window.addEventListener("devicemotion", (e) => {
+          const acc = e.accelerationIncludingGravity;
+          const fuerza = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
+
+          if (fuerza > 25 && Date.now() - lastShake > 1500) {
+            lastShake = Date.now();
+
+            for (let i = 0; i < 15; i++) crearConfeti();
+            document.getElementById("shakeMsg").style.display = "block";
+
+            setTimeout(() => {
+              document.getElementById("shakeMsg").style.display = "none";
+            }, 2000);
+          }
+        });
+      }
+      function nombreReactivo() {
+        const nombre = document.querySelector(".nombre");
+        nombre.style.color = "#845ec2";
+        nombre.innerText = "✨ Yiseth ✨";
+
+        if (navigator.vibrate) navigator.vibrate(120);
+
+        setTimeout(() => {
+          nombre.style.color = "#ff4d6d";
+          nombre.innerText = "Yiseth";
+        }, 1500);
+      }
+      function crearConfeti() {
+        const c = document.createElement("div");
+        c.className = "confetti";
+
+        const rebelde = Math.random() < 0.08;
+        c.innerText = rebelde
+          ? "🎂"
+          : emojis[Math.floor(Math.random() * emojis.length)];
+
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.animationDuration = rebelde
+          ? "10s"
+          : 4 + Math.random() * 5 + "s";
+        c.style.fontSize = 14 + Math.random() * 50 + "px";
+
+        if (rebelde) {
+          c.style.cursor = "pointer";
+          c.onclick = () => {
+            c.innerText = "🤡";
+            c.style.fontSize = "32px";
+          };
+        }
+
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 12000);
+      }
+      function vibrarFinal() {
+        if (navigator.vibrate) {
+          navigator.vibrate([200, 100, 200, 100, 400]);
+        }
+
+        const oculto = document.createElement("div");
+        oculto.innerText = "Que vas a hacer hoy? 🤔";
+        oculto.style.fontSize = "24px";
+        oculto.style.marginTop = "10px";
+        oculto.style.color = "#6a0572";
+
+        document.getElementById("textoEscribiendo").appendChild(oculto);
+      }
     </script>
   </body>
 </html>
