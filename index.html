@@ -257,8 +257,7 @@
           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
           z-index: 9999;
         "
-      >
-      </div>
+      ></div>
     </div>
     <div id="emojiRebelde">🎂</div>
 
@@ -282,55 +281,70 @@
       function iniciarEmojiRebelde() {
         const rebelde = document.getElementById("emojiRebelde");
         const msg = document.getElementById("msgRebelde");
+
         rebelde.style.display = "block";
+        rebelde.innerText = "🎂";
+        msg.innerText = "Toca la torta 🎂 si puedes";
+        msg.style.display = "block";
+
         let huyendo = false;
+        let atrapado = false;
 
         function huir() {
-          if (huyendo) return;
+          if (huyendo || atrapado) return;
+
           huyendo = true;
 
-          // nueva posición
-          const x = Math.random() * 80 + 10;
+          // nueva posición segura en pantalla
+          const x = Math.random() * 70 + 10;
           const y = Math.random() * 60 + 10;
 
           rebelde.innerText = "🏃‍♂️";
+          rebelde.style.transition = "all 0.25s ease-out";
           rebelde.style.left = x + "vw";
           rebelde.style.top = y + "vh";
-          rebelde.style.transform = "scale(1.4)";
+          rebelde.style.transform = "scale(1.4) rotate(10deg)";
 
+          msg.innerText = "eh… ese no 😒";
           msg.style.display = "block";
 
-          if (navigator.vibrate) navigator.vibrate(80);
+          if (navigator.vibrate) navigator.vibrate(60);
 
           setTimeout(() => {
             rebelde.innerText = "🎂";
             rebelde.style.transform = "scale(1)";
             huyendo = false;
-          }, 600);
-
-          setTimeout(() => {
-            msg.style.display = "none";
-          }, 1200);
+          }, 450);
         }
 
-        // huye antes de tocarlo
-        rebelde.addEventListener("touchstart", huir);
-        rebelde.addEventListener("mouseover", huir);
+        function atrapar() {
+          if (atrapado) return;
+          atrapado = true;
 
-        // si logran tocarlo
-        rebelde.addEventListener("click", () => {
-          msg.style.display = "block";
           rebelde.innerText = "😵‍💫";
+          rebelde.style.transition = "all 0.3s ease";
           rebelde.style.transform = "scale(1.6)";
+
           msg.innerText = "ok ok… ya 😵‍💫";
+          msg.style.display = "block";
 
           if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
 
           setTimeout(() => {
             rebelde.style.display = "none";
             msg.innerText = "eh… tengo 30k para la torta 🎂";
-          }, 1500);
-        });
+            msg.style.display = "block";
+          }, 1400);
+        }
+
+        // 📱 móvil: huye ANTES del tap
+        rebelde.addEventListener("touchstart", huir, { passive: true });
+
+        // 🖱️ desktop: huye al acercarse
+        rebelde.addEventListener("mouseenter", huir);
+
+        // 🎯 click real (si logran atraparlo)
+        rebelde.addEventListener("click", atrapar);
       }
 
       // 🎵 música
@@ -344,10 +358,10 @@
 
       // ✍️ TEXTO QUE SE ESCRIBE SOLO
       const lineas = [
-        { texto: "Hoy es tu día 🙂", efecto: "salta" },
+        { texto: "Hoy es tu día 🙂 ", efecto: "salta" },
         { texto: "y eso ya es una buena razón para sonreír", efecto: "" },
-        { texto: "Gracias por estar, por sumar", efecto: "tiembla" },
-        { texto: "y por hacer los días más fáciles", efecto: "" },
+        { texto: "Gracias por estar, por sumar ", efecto: "tiembla" },
+        { texto: "y por hacer los días más divertidos", efecto: "" },
         { texto: "Que este nuevo año te regale", efecto: "salta" },
         { texto: "momentos tranquilos y muchas risas 😄", efecto: "tiembla" },
       ];
@@ -358,6 +372,8 @@
       function escribirTexto() {
         if (lineaActual >= lineas.length) {
           setTimeout(finalFalso, 1500);
+          iniciarEmojiRebelde();
+
           return;
         }
 
@@ -383,7 +399,6 @@
           charActual = 0;
           setTimeout(escribirTexto, 500);
           tic.pause();
-          iniciarEmojiRebelde();
         }
       }
       function finalFalso() {
