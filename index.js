@@ -151,7 +151,7 @@ function escribirTexto() {
   }
 }
 const versiculo =
-  "“Que el Señor te bendiga y te guarde; que haga resplandecer su rostro sobre ti.” ✝️";
+  "<strong>“Que el Señor te bendiga y te guarde; que haga resplandecer su rostro sobre ti.” ✝️</strong> 1 Corintios 1:30";
 function escribirVersiculo(texto, contenedor, callback) {
   let i = 0;
 
@@ -187,9 +187,7 @@ function finalFalso() {
     falso.innerText = "Dios te bendiga 🙏";
   }, 2400);
 
-  setTimeout(() => {
-    falso.innerText = ""; // limpia
-  }, 3000);
+
 
   setTimeout(() => {
     escribirVersiculo(versiculo, falso, () => {
