@@ -151,9 +151,10 @@ function escribirTexto() {
   }
 }
 const versiculo =
-  "<strong>“Que el Señor te bendiga y te guarde; que haga resplandecer su rostro sobre ti.” ✝️</strong> 1 Corintios 1:30";
+  "“Que el Señor te bendiga y te guarde; que haga resplandecer su rostro sobre ti.” ✝️ 1 Corintios 1:30";
 function escribirVersiculo(texto, contenedor, callback) {
   let i = 0;
+  contenedor.innerHTML = "";
 
   const intervalo = setInterval(() => {
     contenedor.innerHTML += texto.charAt(i);
@@ -161,6 +162,10 @@ function escribirVersiculo(texto, contenedor, callback) {
 
     if (i >= texto.length) {
       clearInterval(intervalo);
+
+      // poner en negrita TODO al final
+      contenedor.innerHTML = `<strong>${contenedor.innerHTML}</strong>`;
+
       if (callback) callback();
     }
   }, 45);
@@ -183,11 +188,11 @@ function finalFalso() {
     falso.innerText = "Una cosa más 🤔";
   }, 2400);
 
+
+
   setTimeout(() => {
-    falso.innerText = "Dios te bendiga 🙏";
-  }, 2400);
-
-
+    falso.innerText = ""; // limpia
+  }, 3000);
 
   setTimeout(() => {
     escribirVersiculo(versiculo, falso, () => {
