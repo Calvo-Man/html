@@ -253,7 +253,7 @@
           background: #fff;
           padding: 10px 16px;
           border-radius: 20px;
-          font-size: 14px;
+          font-size: 20px;
           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
           z-index: 9999;
         "
@@ -284,67 +284,79 @@
 
         rebelde.style.display = "block";
         rebelde.innerText = "🎂";
-        msg.innerText = "Toca la torta 🎂 si puedes";
+        msg.innerText = "Intenta tocarme 🎂";
         msg.style.display = "block";
 
-        let huyendo = false;
         let atrapado = false;
+        let velocidad = 1200; // ms entre movimientos
+        let movimiento;
 
-        function huir() {
-          if (huyendo || atrapado) return;
+        function mover() {
+          if (atrapado) return;
 
-          huyendo = true;
-
-          // nueva posición segura en pantalla
           const x = Math.random() * 70 + 10;
           const y = Math.random() * 60 + 10;
 
-          rebelde.innerText = "🏃‍♂️";
-          rebelde.style.transition = "all 0.25s ease-out";
+          rebelde.style.transition = "all 0.6s ease-in-out";
           rebelde.style.left = x + "vw";
           rebelde.style.top = y + "vh";
-          rebelde.style.transform = "scale(1.4) rotate(10deg)";
+        }
 
-          msg.innerText = "eh… ese no 😒";
-          msg.style.display = "block";
+        function iniciarMovimiento() {
+          mover();
+          movimiento = setInterval(mover, velocidad);
+        }
 
-          if (navigator.vibrate) navigator.vibrate(60);
+        function acelerar() {
+          if (atrapado) return;
+
+          velocidad = 500;
+          clearInterval(movimiento);
+          iniciarMovimiento();
+
+          rebelde.innerText = "🏃‍♂️";
+          msg.innerText = "jajaja casi 😜";
+
+          if (navigator.vibrate) navigator.vibrate(40);
 
           setTimeout(() => {
             rebelde.innerText = "🎂";
-            rebelde.style.transform = "scale(1)";
-            huyendo = false;
-          }, 450);
+            velocidad = 1200;
+            clearInterval(movimiento);
+            iniciarMovimiento();
+          }, 800);
         }
 
         function atrapar() {
           if (atrapado) return;
           atrapado = true;
 
+          clearInterval(movimiento);
+
           rebelde.innerText = "😵‍💫";
-          rebelde.style.transition = "all 0.3s ease";
           rebelde.style.transform = "scale(1.6)";
+          rebelde.style.transition = "all 0.3s ease";
 
           msg.innerText = "ok ok… ya 😵‍💫";
-          msg.style.display = "block";
 
           if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
 
           setTimeout(() => {
             rebelde.style.display = "none";
             msg.innerText = "eh… tengo 30k para la torta 🎂";
-            msg.style.display = "block";
           }, 1400);
         }
 
-        // 📱 móvil: huye ANTES del tap
-        rebelde.addEventListener("touchstart", huir, { passive: true });
+        // 📱 apenas acercas el dedo → acelera
+        rebelde.addEventListener("touchstart", acelerar, { passive: true });
 
-        // 🖱️ desktop: huye al acercarse
-        rebelde.addEventListener("mouseenter", huir);
+        // 🖱️ desktop
+        rebelde.addEventListener("mouseenter", acelerar);
 
-        // 🎯 click real (si logran atraparlo)
+        // 🎯 si logran tocarlo
         rebelde.addEventListener("click", atrapar);
+
+        iniciarMovimiento();
       }
 
       // 🎵 música
@@ -362,7 +374,7 @@
         { texto: "y eso ya es una buena razón para sonreír", efecto: "" },
         { texto: "Gracias por estar, por sumar ", efecto: "tiembla" },
         { texto: "y por hacer los días más divertidos", efecto: "" },
-        { texto: "Que este nuevo año te regale", efecto: "salta" },
+        { texto: "Que este nuevo año te regale ", efecto: "salta" },
         { texto: "momentos tranquilos y muchas risas 😄", efecto: "tiembla" },
       ];
 
