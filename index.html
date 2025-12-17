@@ -232,6 +232,26 @@
         😳 Ey ey… calmate no soy maraca 😂
       </div>
     </div>
+    <div
+      id="msgRebelde"
+      style="
+        display: none;
+        position: fixed;
+        bottom: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ff4d6d;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 9999;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      "
+    >
+      eh… ese no se toca 😒
+    </div>
 
     <script>
       // 🎉 confeti
@@ -241,22 +261,64 @@
         c.className = "confetti";
 
         const rebelde = Math.random() < 0.08;
+
         c.innerText = rebelde
-          ? "😈"
+          ? "🎂"
           : emojis[Math.floor(Math.random() * emojis.length)];
 
         c.style.left = Math.random() * 100 + "vw";
         c.style.animationDuration = rebelde
           ? "10s"
           : 4 + Math.random() * 5 + "s";
-        c.style.fontSize = 14 + Math.random() * 50 + "px";
+        c.style.fontSize = 14 + Math.random() * 40 + "px";
 
         if (rebelde) {
           c.style.cursor = "pointer";
-          c.onclick = () => {
-            c.innerText = "🤡";
-            c.style.transform = "scale(1.4)";
-          };
+
+          let escapado = false;
+
+          function huir() {
+            if (escapado) return;
+            escapado = true;
+
+            // nueva posición aleatoria
+            c.style.left = Math.random() * 100 + "vw";
+            c.style.top = Math.random() * 60 + "vh";
+
+            // animación de escape
+            c.style.transition = "all 0.3s ease-out";
+            c.style.transform = "scale(1.4) rotate(20deg)";
+
+            // cambia emoji
+            c.innerText = "🏃‍♂️";
+
+            setTimeout(() => {
+              escapado = false;
+              c.innerText = "😈";
+              c.style.transform = "scale(1)";
+            }, 600);
+          }
+
+          // huye antes de tocarlo
+          c.addEventListener("touchstart", huir);
+          c.addEventListener("mouseover", huir);
+
+          // si lo logran tocar
+          c.addEventListener("click", () => {
+            c.innerText = "😵‍💫";
+            c.style.animation = "none";
+            c.style.fontSize = "44px";
+
+            const msg = document.getElementById("msgRebelde");
+            msg.innerText = "ok ok… me atrapaste 😵‍💫";
+            msg.style.display = "block";
+
+            if (navigator.vibrate) navigator.vibrate(150);
+
+            setTimeout(() => {
+              msg.style.display = "none";
+            }, 1500);
+          });
         }
 
         document.body.appendChild(c);
