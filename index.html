@@ -33,7 +33,7 @@
       #textoEscribiendo {
         font-size: 16px;
         color: #333;
-
+        line-height: 1.7;
         white-space: pre-line;
         min-height: 140px;
         margin-top: 12px;
@@ -55,16 +55,51 @@
         margin-bottom: 10px;
       }
 
+      @keyframes palpitar {
+        0% {
+          transform: scale(1);
+        }
+        25% {
+          transform: scale(1.06);
+        }
+        50% {
+          transform: scale(1);
+        }
+        75% {
+          transform: scale(1.04);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
       .nombre {
         font-size: 30px;
         color: #ff4d6d;
         margin: 6px 0;
+        letter-spacing: 0.5px;
+
+        animation: palpitar 1.6s ease-in-out infinite;
+        display: inline-block; /* clave para el scale */
       }
 
       .subtitulo {
         font-size: 15px;
         color: #6a0572;
         margin-bottom: 14px;
+      }
+      .emoji {
+        animation: bounce 1.5s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
       }
 
       p {
@@ -163,10 +198,7 @@
       <source src="./happy-birthday-404431.mp3" type="audio/mpeg" />
     </audio>
     <audio id="tic">
-      <source
-        src="./escribir-a-maquina-163139.mp3"
-        type="audio/mpeg"
-      />
+      <source src="./escribir-a-maquina-163139.mp3" type="audio/mpeg" />
     </audio>
 
     <div class="card">
@@ -207,12 +239,28 @@
       function crearConfeti() {
         const c = document.createElement("div");
         c.className = "confetti";
-        c.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+
+        const rebelde = Math.random() < 0.08;
+        c.innerText = rebelde
+          ? "😈"
+          : emojis[Math.floor(Math.random() * emojis.length)];
+
         c.style.left = Math.random() * 100 + "vw";
-        c.style.animationDuration = 4 + Math.random() * 5 + "s";
-        c.style.fontSize = 14 + Math.random() * 20 + "px";
+        c.style.animationDuration = rebelde
+          ? "10s"
+          : 4 + Math.random() * 5 + "s";
+        c.style.fontSize = 14 + Math.random() * 50 + "px";
+
+        if (rebelde) {
+          c.style.cursor = "pointer";
+          c.onclick = () => {
+            c.innerText = "🤡";
+            c.style.transform = "scale(1.4)";
+          };
+        }
+
         document.body.appendChild(c);
-        setTimeout(() => c.remove(), 9000);
+        setTimeout(() => c.remove(), 12000);
       }
 
       // 🎵 música
@@ -226,13 +274,12 @@
 
       // ✍️ TEXTO QUE SE ESCRIBE SOLO
       const lineas = [
-        { texto: "Hoy celebramos que existes 😄", efecto: "salta" },
-        { texto: "que haces reír, que acompañas", efecto: "" },
-        { texto: "y que haces los días más llevaderos.", efecto: "tiembla" },
-        { texto: "Que este nuevo año venga con", efecto: "" },
-        { texto: "risas, aventuras, comida rica", efecto: "salta" },
-        { texto: "y cero estrés innecesario 😌", efecto: "tiembla" },
-        { texto: "¡Feliz cumpleaños! 🎂✨", efecto: "salta" },
+        { texto: "Hoy es tu día 🙂", efecto: "salta" },
+        { texto: "y eso ya es una buena razón para sonreír", efecto: "" },
+        { texto: "Gracias por estar, por sumar", efecto: "tiembla" },
+        { texto: "y por hacer los días más fáciles", efecto: "" },
+        { texto: "Que este nuevo año te regale", efecto: "salta" },
+        { texto: "momentos tranquilos y muchas risas 😄", efecto: "tiembla" },
       ];
 
       let lineaActual = 0;
@@ -240,9 +287,9 @@
 
       function escribirTexto() {
         if (lineaActual >= lineas.length) {
-            setTimeout(finalFalso, 1500);
-            return;
-          }
+          setTimeout(finalFalso, 1500);
+          return;
+        }
 
         const contenedor = document.getElementById("textoEscribiendo");
         const tic = document.getElementById("tic");
@@ -250,9 +297,14 @@
         const efecto = lineas[lineaActual].efecto;
 
         if (charActual < linea.length) {
-          contenedor.innerHTML += linea.charAt(charActual);
-          tic.currentTime = 0;
-          tic.play().catch(() => {});
+          const letra = linea.charAt(charActual);
+          contenedor.innerHTML += letra;
+
+          if (letra !== " ") {
+            tic.currentTime = 0;
+            tic.play().catch(() => {});
+          }
+
           charActual++;
           setTimeout(escribirTexto, 40);
         } else {
@@ -282,8 +334,8 @@
         setTimeout(() => {
           falso.innerText = "Feliz cumpleaños 🎉";
           for (let i = 0; i < 25; i++) crearConfeti();
-          vibrarFinal();
         }, 2500);
+        vibrarFinal();
       }
 
       // 🚀 botón inicial
@@ -295,11 +347,7 @@
         setInterval(crearConfeti, 250);
         escribirTexto();
       }
-      function vibrarFinal() {
-        if (navigator.vibrate) {
-          navigator.vibrate([200, 100, 200, 100, 400]);
-        }
-      }
+
       let lastShake = 0;
 
       if (window.DeviceMotionEvent) {
@@ -331,40 +379,15 @@
           nombre.innerText = "Yiseth";
         }, 1500);
       }
-      function crearConfeti() {
-        const c = document.createElement("div");
-        c.className = "confetti";
 
-        const rebelde = Math.random() < 0.08;
-        c.innerText = rebelde
-          ? "🎂"
-          : emojis[Math.floor(Math.random() * emojis.length)];
-
-        c.style.left = Math.random() * 100 + "vw";
-        c.style.animationDuration = rebelde
-          ? "10s"
-          : 4 + Math.random() * 5 + "s";
-        c.style.fontSize = 14 + Math.random() * 50 + "px";
-
-        if (rebelde) {
-          c.style.cursor = "pointer";
-          c.onclick = () => {
-            c.innerText = "🤡";
-            c.style.fontSize = "32px";
-          };
-        }
-
-        document.body.appendChild(c);
-        setTimeout(() => c.remove(), 12000);
-      }
       function vibrarFinal() {
         if (navigator.vibrate) {
           navigator.vibrate([200, 100, 200, 100, 400]);
         }
 
         const oculto = document.createElement("div");
-        oculto.innerText = "Que vas a hacer hoy? 🤔";
-        oculto.style.fontSize = "24px";
+        oculto.innerText = "¿Qué vas a hacer hoy? 🤔";
+        oculto.style.fontSize = "16px";
         oculto.style.marginTop = "10px";
         oculto.style.color = "#6a0572";
 
