@@ -172,7 +172,7 @@ function finalFalso() {
   const falso = document.createElement("div");
   falso.innerText = "…";
   falso.style.fontSize = "16px";
-  falso.style.marginTop = "5px";
+  falso.style.marginTop = "10px";
   contenedor.appendChild(falso);
 
   setTimeout(() => {
@@ -208,7 +208,7 @@ function comenzarFiesta() {
   document.getElementById("contenido").style.display = "block";
   iniciarMusica();
   setInterval(crearConfeti, 250);
-  nombreReactivo();
+  setInterval(nombreReactivo, 4000);
   escribirTexto();
 }
 
