@@ -297,7 +297,8 @@
           const x = Math.random() * 70 + 10;
           const y = Math.random() * 60 + 10;
 
-          rebelde.style.transition = "all 0.6s ease-in-out";
+          rebelde.style.transition = "all 0.4s linear"; // más nervioso
+
           rebelde.style.left = x + "vw";
           rebelde.style.top = y + "vh";
         }
@@ -343,7 +344,7 @@
 
           setTimeout(() => {
             rebelde.style.display = "none";
-            msg.innerText = "eh… tengo 30k para la torta 🎂";
+            msg.innerText = "Eh… Tengo 30k para la torta 🎂";
           }, 1400);
         }
 
@@ -413,6 +414,22 @@
           tic.pause();
         }
       }
+      const versiculo =
+        "“Que el Señor te bendiga y te guarde; que haga resplandecer su rostro sobre ti.” ✝️";
+      function escribirVersiculo(texto, contenedor, callback) {
+        let i = 0;
+
+        const intervalo = setInterval(() => {
+          contenedor.innerHTML += texto.charAt(i);
+          i++;
+
+          if (i >= texto.length) {
+            clearInterval(intervalo);
+            if (callback) callback();
+          }
+        }, 45);
+      }
+
       function finalFalso() {
         const contenedor = document.getElementById("textoEscribiendo");
 
@@ -425,15 +442,28 @@
         setTimeout(() => {
           falso.innerText = "Ah… espera 👀";
         }, 1200);
+
         setTimeout(() => {
           falso.innerText = "Una cosa más 🤔";
         }, 1800);
 
         setTimeout(() => {
-          falso.innerText = "Feliz cumpleaños 🎉";
-          for (let i = 0; i < 25; i++) crearConfeti();
-        }, 2500);
-        vibrarFinal();
+          falso.innerText = "Dios te bendiga 🙏";
+        }, 2400);
+
+        setTimeout(() => {
+          falso.innerText = ""; // limpia
+        }, 3000);
+
+        setTimeout(() => {
+          escribirVersiculo(versiculo, falso, () => {
+            setTimeout(() => {
+              falso.innerHTML += "<br><br><strong>Feliz cumpleaños 🎉</strong>";
+              for (let i = 0; i < 25; i++) crearConfeti();
+              vibrarFinal();
+            }, 800);
+          });
+        }, 3200);
       }
 
       // 🚀 botón inicial
