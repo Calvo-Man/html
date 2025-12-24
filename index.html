@@ -10,17 +10,82 @@
         box-sizing: border-box;
       }
 
+      /* ====== FONDO NAVIDEÑO (solo CSS) ======
+         - degradados profundos para el cielo
+         - pseudo-elementos para luces tipo "bokeh" y estrellas/destellos
+         - animación muy sutil para parpadeo de estrellas (desactivada si se prefiere menos movimiento)
+      */
+      html,
+      body {
+        height: 100%;
+      }
+
       body {
         margin: 0;
         height: 100vh;
         font-family: Georgia, serif;
-        background: url("")
-          no-repeat center / cover;
+        /* 1) base de color con degradado vertical */
+        background-color: #02121a;
+        background-image:
+          radial-gradient(circle at 15% 10%, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 12%),
+          radial-gradient(circle at 85% 25%, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 10%),
+          linear-gradient(180deg, #063244 0%, #022f3a 40%, #00121a 100%);
+        background-repeat: no-repeat;
+        background-size: cover;
         overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
         color: white;
+      }
+
+      /* Luces tipo "bokeh" suaves (delante del fondo, detrás del contenido) */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: -2;
+        background-image:
+          radial-gradient(circle at 10% 20%, rgba(226,103,110,0.10) 0 8%, transparent 18%),
+          radial-gradient(circle at 30% 40%, rgba(241,199,88,0.08) 0 7%, transparent 15%),
+          radial-gradient(circle at 75% 25%, rgba(81,209,180,0.08) 0 6%, transparent 14%);
+        mix-blend-mode: screen;
+        filter: blur(8px) saturate(110%);
+      }
+
+      /* Estrellas / destellos sutiles (puntos blancos pequeños) */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: -1;
+        background-image:
+          radial-gradient(circle at 4% 10%, rgba(255,255,255,0.9) 0.8px, transparent 1px),
+          radial-gradient(circle at 18% 25%, rgba(255,255,255,0.85) 0.7px, transparent 1px),
+          radial-gradient(circle at 30% 8%, rgba(255,255,255,0.7) 0.9px, transparent 1px),
+          radial-gradient(circle at 52% 18%, rgba(255,255,255,0.6) 0.6px, transparent 1px),
+          radial-gradient(circle at 70% 35%, rgba(255,255,255,0.9) 0.8px, transparent 1px),
+          radial-gradient(circle at 88% 12%, rgba(255,255,255,0.75) 0.7px, transparent 1px),
+          radial-gradient(circle at 60% 5%, rgba(255,255,255,0.65) 0.8px, transparent 1px);
+        background-size: 100% 100%;
+        opacity: 0.9;
+        animation: twinkle 4s linear infinite;
+        mix-blend-mode: screen;
+      }
+
+      @keyframes twinkle {
+        0% {
+          opacity: 0.85;
+          transform: translateZ(0);
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.85;
+        }
       }
 
       /* ====== PANTALLA INICIAL ====== */
@@ -177,6 +242,13 @@
         .snow,
         .confetti {
           display: none !important;
+        }
+        /* eliminar animaciones de fondo */
+        body::after,
+        body::before {
+          animation: none !important;
+          opacity: 1 !important;
+          filter: none !important;
         }
       }
     </style>
