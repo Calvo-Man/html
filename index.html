@@ -259,7 +259,7 @@ God bless you a lot. 🎄🎁✨`;
         if (i < mensaje.length) {
           text.innerHTML += mensaje.charAt(i);
           i++;
-          setTimeout(escribir, 30);
+          setTimeout(escribir, 10);
         } else {
           firma.classList.add("show");
 
@@ -272,7 +272,7 @@ God bless you a lot. 🎄🎁✨`;
         if (j < versiculoTexto.length) {
           versiculo.innerHTML += versiculoTexto.charAt(j);
           j++;
-          setTimeout(escribirVersiculo, 30);
+          setTimeout(escribirVersiculo, 10);
         }
       }
 
@@ -297,7 +297,7 @@ God bless you a lot. 🎄🎁✨`;
         const countdown = document.getElementById("countdown");
         countdown.style.display = "block";
 
-        let count = 3;
+        let count = 1;
         countdown.textContent = count;
 
         const interval = setInterval(() => {
