@@ -223,60 +223,6 @@
         }
       }
 
-      /* ====== LETRAS FIJAS: ANIMACIÓN PALPITANTE ====== */
-      .fixed-letter {
-        display: inline-block;
-        transform-origin: center center;
-        /* suaviza un poco el movimiento */
-        will-change: transform;
-        /* tamaño base para que el pulsado no afecte layout tanto */
-      }
-
-      @keyframes palpitar {
-        0% {
-          transform: scale(1);
-        }
-        30% {
-          transform: scale(1.06);
-        }
-        60% {
-          transform: scale(0.995);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
-
-      /* aplica la animación con una duración cómoda */
-      .fixed-letter {
-        animation-name: palpitar;
-        animation-duration: 1.6s;
-        animation-timing-function: cubic-bezier(.4, .0, .2, 1);
-        animation-iteration-count: infinite;
-      }
-
-      /* variación sutil: alterna la fase para no palpar todas al mismo tiempo */
-      .fixed-letter:nth-child(4n) { animation-duration: 1.8s; }
-      .fixed-letter:nth-child(3n) { animation-duration: 1.65s; }
-
-      /* Respeta usuarios que prefieren menos movimiento */
-      @media (prefers-reduced-motion: reduce) {
-        .start h1,
-        .card {
-          animation: none !important;
-        }
-        .snow,
-        .confetti,
-        body::after,
-        body::before {
-          display: none !important;
-          animation: none !important;
-        }
-        .fixed-letter {
-          animation: none !important;
-        }
-      }
-
       /* ====== MEJORAS PC ====== */
       @media (min-width: 768px) {
         .start h1 {
@@ -294,6 +240,21 @@
           to {
             box-shadow: 0 0 36px rgba(180,120,40,0.18);
           }
+        }
+      }
+
+      /* Respeta usuarios que prefieren menos movimiento */
+      @media (prefers-reduced-motion: reduce) {
+        .start h1,
+        .card {
+          animation: none !important;
+        }
+        .snow,
+        .confetti,
+        body::after,
+        body::before {
+          display: none !important;
+          animation: none !important;
         }
       }
     </style>
@@ -334,36 +295,6 @@
     </div>
 
     <script>
-      // envuelve caracteres de texto en spans con clase .fixed-letter para animarlos
-      function wrapFixedText(selector) {
-        document.querySelectorAll(selector).forEach((el) => {
-          if (!el || el.dataset.wrapped === "true") return;
-          // conserva el texto original para accesibilidad
-          const original = el.textContent || "";
-          // añade aria-label con el texto completo para que los lectores de pantalla no "lean letra por letra"
-          el.setAttribute("aria-label", original);
-          el.dataset.wrapped = "true";
-          // vaciar contenido y crear spans
-          el.innerHTML = "";
-          for (let k = 0; k < original.length; k++) {
-            const ch = original[k];
-            const span = document.createElement("span");
-            span.className = "fixed-letter";
-            // preserva espacios visuales usando NBSP
-            span.textContent = ch === " " ? "\u00A0" : ch;
-            // esconder cada span de lectores de pantalla; el lector usará aria-label del contenedor
-            span.setAttribute("aria-hidden", "true");
-            // pequeño desfase por índice para efecto en cadena
-            span.style.animationDelay = (k * 0.06) + "s";
-            el.appendChild(span);
-          }
-        });
-      }
-
-      // Ejecutar al inicio para envolver los textos fijos visibles.
-      // selectors: título de la carta, botón abrir, firma y título de inicio
-      wrapFixedText([".intro", "#openBtn", ".firma", ".start h1"]);
-
       let esMovil = window.innerWidth < 768;
 
       // Actualiza si cambia el tamaño (por ejemplo rotación)
@@ -409,9 +340,6 @@ Isaías 9:6`;
           setTimeout(escribir, esMovil ? 35 : 22);
         } else {
           firma.classList.add("show");
-          // cuando la firma se muestra, envolver su texto si aún no se hizo (se envolvió al inicio
-          // pero si cambias su texto dinámicamente aquí podrías volver a envolver)
-          wrapFixedText([".firma"]); // idempotente gracias a data-wrapped
           setTimeout(escribirVersiculo, 1400);
         }
       }
