@@ -58,6 +58,12 @@
         background: linear-gradient(135deg, #e63946, #2a9d8f);
         color: white;
         box-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+        cursor: pointer;
+      }
+
+      .open-btn:focus {
+        outline: 3px solid rgba(255, 255, 255, 0.45);
+        outline-offset: 4px;
       }
 
       .countdown {
@@ -116,6 +122,7 @@
         top: -10px;
         font-size: 20px;
         animation: fall linear forwards;
+        pointer-events: none;
       }
 
       @keyframes fall {
@@ -131,6 +138,7 @@
         height: 12px;
         top: -10px;
         animation: confetti-fall linear forwards;
+        pointer-events: none;
       }
 
       @keyframes confetti-fall {
@@ -159,38 +167,65 @@
           }
         }
       }
+
+      /* Respeta usuarios que prefieren menos movimiento */
+      @media (prefers-reduced-motion: reduce) {
+        .start h1,
+        .card {
+          animation: none !important;
+        }
+        .snow,
+        .confetti {
+          display: none !important;
+        }
+      }
     </style>
   </head>
 
   <body>
     <!-- Audios -->
-    <audio id="bell">
+    <audio id="bell" preload="auto" playsinline>
       <source src="./sinos-de-natal-440257.mp3" />
     </audio>
 
-    <audio id="music" loop>
+    <audio id="music" loop preload="auto" playsinline>
       <source src="./we-wish-you-a-merry-christmas-444573.mp3" />
     </audio>
 
     <!-- Inicio -->
-    <div class="start" id="start">
+    <div class="start" id="start" aria-hidden="false">
       <h1>🎄 Tengo algo para ti 🎄</h1>
-      <button class="open-btn" onclick="iniciarExperiencia()">
+      <button class="open-btn" id="openBtn" type="button">
         🎁 Abrir carta
       </button>
-      <div class="countdown" id="countdown"></div>
+      <div class="countdown" id="countdown" aria-hidden="true"></div>
     </div>
 
     <!-- Carta -->
-    <div class="card" id="card">
-      <div class="intro">Merry Christmas 🎄</div>
-      <div id="text"></div>
+    <div
+      class="card"
+      id="card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="card-title"
+      tabindex="-1"
+    >
+      <div class="intro" id="card-title">Merry Christmas 🎄</div>
+      <div id="text" aria-live="polite"></div>
       <div class="firma" id="firma">Con cariño 💖</div>
-      <div class="versiculo" id="versiculo"></div>
+      <div class="versiculo" id="versiculo" aria-live="polite"></div>
     </div>
 
     <script>
-      const esMovil = window.innerWidth < 768;
+      let esMovil = window.innerWidth < 768;
+
+      // Actualiza si cambia el tamaño (por ejemplo rotación)
+      window.addEventListener("resize", () => {
+        esMovil = window.innerWidth < 768;
+      });
+
+      const reduceMotion = window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       const nombreAmiga = "Ferrr";
       const mensaje = `Querida ${nombreAmiga},
@@ -208,13 +243,20 @@ Isaías 9:6`;
       const text = document.getElementById("text");
       const firma = document.getElementById("firma");
       const versiculo = document.getElementById("versiculo");
+      const card = document.getElementById("card");
+      const start = document.getElementById("start");
+      const countdownEl = document.getElementById("countdown");
+      const bell = document.getElementById("bell");
+      const music = document.getElementById("music");
+      const openBtn = document.getElementById("openBtn");
 
       let i = 0;
       let j = 0;
 
       function escribir() {
         if (i < mensaje.length) {
-          text.innerHTML += mensaje.charAt(i++);
+          // usar textContent para evitar reflows/HTML injection
+          text.textContent += mensaje.charAt(i++);
           setTimeout(escribir, esMovil ? 18 : 10);
         } else {
           firma.classList.add("show");
@@ -224,53 +266,90 @@ Isaías 9:6`;
 
       function escribirVersiculo() {
         if (j < versiculoTexto.length) {
-          versiculo.innerHTML += versiculoTexto.charAt(j++);
+          versiculo.textContent += versiculoTexto.charAt(j++);
           setTimeout(escribirVersiculo, esMovil ? 20 : 12);
         }
       }
 
       function iniciarExperiencia() {
-        document.getElementById("bell").play();
+        // reproducir campana (manejar la promesa)
+        if (bell) {
+          bell.currentTime = 0;
+          bell.play().catch((e) => {
+            // falló por políticas de autoplay — no bloquear la experiencia
+            console.warn("Reproducción de campana bloqueada:", e);
+          });
+        }
 
+        // vibración en móviles si disponible
         if (navigator.vibrate && esMovil) {
           navigator.vibrate(200);
         }
 
-        lanzarConfeti();
+        // confetti desactivado si usuario prefiere menos movimiento
+        if (!reduceMotion) {
+          lanzarConfeti();
+        }
 
-        const countdown = document.getElementById("countdown");
-        countdown.style.display = "block";
-        countdown.textContent = "1";
-
-        setTimeout(mostrarCarta, 1000);
-        setTimeout(() => document.getElementById("music").play(), 4000);
+        // contador 3..2..1
+        let contador = 3;
+        countdownEl.style.display = "block";
+        countdownEl.setAttribute("aria-hidden", "false");
+        countdownEl.textContent = contador;
+        const interval = setInterval(() => {
+          contador -= 1;
+          if (contador > 0) {
+            countdownEl.textContent = contador;
+          } else {
+            clearInterval(interval);
+            countdownEl.style.display = "none";
+            countdownEl.setAttribute("aria-hidden", "true");
+            mostrarCarta();
+            // reproducir música unos instantes después (manejar promesa)
+            setTimeout(() => {
+              if (music) {
+                music.volume = 0.9;
+                music.play().catch((e) => {
+                  console.warn("Reproducción de música bloqueada:", e);
+                });
+              }
+            }, 400);
+          }
+        }, 700);
       }
 
       function mostrarCarta() {
-        const start = document.getElementById("start");
         start.style.opacity = 0;
+        start.setAttribute("aria-hidden", "true");
 
         setTimeout(() => {
           start.style.display = "none";
           document.getElementById("card").style.display = "block";
+          // enfocar la carta para navegación por teclado / lectores de pantalla
+          card.focus();
           escribir();
-          setInterval(crearNieve, esMovil ? 800 : 350);
-        }, 1000);
+          // crear nieve periódica si no pide reducir movimiento
+          if (!reduceMotion) {
+            setInterval(crearNieve, esMovil ? 800 : 350);
+          }
+        }, 500);
       }
 
       function lanzarConfeti() {
         const colores = ["#e63946", "#2a9d8f", "#ffffff"];
         const cantidad = esMovil ? 20 : 40;
 
-        for (let i = 0; i < cantidad; i++) {
+        for (let k = 0; k < cantidad; k++) {
           const confetti = document.createElement("div");
           confetti.className = "confetti";
           confetti.style.left = Math.random() * window.innerWidth + "px";
           confetti.style.backgroundColor =
             colores[Math.floor(Math.random() * colores.length)];
-          confetti.style.animationDuration = Math.random() * 1 + 1.5 + "s";
+          // duración aleatoria (más suave si reduce velocidad en móviles)
+          confetti.style.animationDuration =
+            Math.random() * 1 + (esMovil ? 1.8 : 1.2) + "s";
           document.body.appendChild(confetti);
-          setTimeout(() => confetti.remove(), 3000);
+          setTimeout(() => confetti.remove(), 3500);
         }
       }
 
@@ -285,6 +364,12 @@ Isaías 9:6`;
         document.body.appendChild(snow);
         setTimeout(() => snow.remove(), 7000);
       }
+
+      // manejar click del botón (y teclado Enter/Space ya que es <button>)
+      openBtn.addEventListener("click", iniciarExperiencia);
+
+      // si prefieres puedes exponer una función global:
+      window.iniciarExperiencia = iniciarExperiencia;
     </script>
   </body>
 </html>
