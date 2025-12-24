@@ -329,7 +329,7 @@ Isaías 9:6`;
         if (i < mensaje.length) {
           // usar textContent para evitar reflows/HTML injection
           text.textContent += mensaje.charAt(i++);
-          setTimeout(escribir, esMovil ? 18 : 10);
+          setTimeout(escribir, esMovil ? 30 : 40);
         } else {
           firma.classList.add("show");
           setTimeout(escribirVersiculo, 1200);
@@ -339,7 +339,7 @@ Isaías 9:6`;
       function escribirVersiculo() {
         if (j < versiculoTexto.length) {
           versiculo.textContent += versiculoTexto.charAt(j++);
-          setTimeout(escribirVersiculo, esMovil ? 20 : 12);
+          setTimeout(escribirVersiculo, esMovil ? 30 : 40);
         }
       }
 
