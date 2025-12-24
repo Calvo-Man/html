@@ -23,7 +23,7 @@
         color: white;
       }
 
-      /* PANTALLA INICIAL */
+      /* ====== PANTALLA INICIAL ====== */
       .start {
         position: absolute;
         inset: 0;
@@ -35,6 +35,259 @@
         text-align: center;
         z-index: 10;
         padding: 20px;
+        transition: opacity 1s ease;
+      }
+
+      .start h1 {
+        font-size: 1.9rem;
+        margin-bottom: 25px;
+        animation: pulse 1.8s infinite;
+      }
+
+      @keyframes pulse {
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .open-btn {
+        padding: 15px 28px;
+        font-size: 1.1rem;
+        border-radius: 35px;
+        border: none;
+        background: linear-gradient(135deg, #e63946, #2a9d8f);
+        color: white;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+      }
+
+      .countdown {
+        margin-top: 25px;
+        font-size: 2.5rem;
+        display: none;
+      }
+
+      /* ====== CARTA ====== */
+      .card {
+        display: none;
+        background: rgba(0, 0, 0, 0.6);
+        width: 92%;
+        max-width: 380px;
+        padding: 24px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 0 14px rgba(255, 255, 255, 0.3);
+      }
+
+      .intro {
+        font-size: 1.8rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+      }
+
+      #text {
+        font-size: 1rem;
+        line-height: 1.7;
+        white-space: pre-line;
+      }
+
+      .firma {
+        opacity: 0;
+        margin-top: 18px;
+        color: #a8dadc;
+        transition: opacity 1.8s ease;
+      }
+
+      .firma.show {
+        opacity: 1;
+      }
+
+      .versiculo {
+        margin-top: 18px;
+        font-size: 0.9rem;
+        font-style: italic;
+        line-height: 1.6;
+        min-height: 55px;
+      }
+
+      /* ====== NIEVE ====== */
+      .snow {
+        position: absolute;
+        top: -10px;
+        font-size: 20px;
+        animation: fall linear forwards;
+      }
+
+      @keyframes fall {
+        to {
+          transform: translateY(110vh);
+        }
+      }
+
+      /* ====== CONFETI ====== */
+      .confetti {
+        position: absolute;
+        width: 6px;
+        height: 12px;
+        top: -10px;
+        animation: confetti-fall linear forwards;
+      }
+
+      @keyframes confetti-fall {
+        to {
+          transform: translateY(110vh) rotate(540deg);
+          opacity: 0;
+        }
+      }
+
+      /* ====== MEJORAS PC ====== */
+      @media (min-width: 768px) {
+        .start h1 {
+          font-size: 2.2rem;
+        }
+
+        .card {
+          animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+          from {
+            box-shadow: 0 0 12px red;
+          }
+          to {
+            box-shadow: 0 0 26px green;
+          }
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Audios -->
+    <audio id="bell">
+      <source src="./sinos-de-natal-440257.mp3" />
+    </audio>
+
+    <audio id="music" loop>
+      <source src="./we-wish-you-a-merry-christmas-444573.mp3" />
+    </audio>
+
+    <!-- Inicio -->
+    <div class="start" id="start">
+      <h1>🎄 Tengo algo para ti 🎄</h1>
+      <button class="open-btn" onclick="iniciarExperiencia()">
+        🎁 Abrir carta
+      </button>
+      <div class="countdown" id="countdown"></div>
+    </div>
+
+    <!-- Carta -->
+    <div class="card" id="card">
+      <div class="intro">Merry Christmas 🎄</div>
+      <div id="text"></div>
+      <div class="firma" id="firma">Con cariño 💖</div>
+      <div class="versiculo" id="versiculo"></div>
+    </div>
+
+    <script>
+      const esMovil = window.innerWidth < 768;
+
+      const nombreAmiga = "Ferrr";
+      const mensaje = `Querida ${nombreAmiga},
+
+Que esta Navidad esté llena de amor,
+paz y momentos hermosos.
+Gracias por tu amistad
+y por ser tan especial.
+God bless you a lot 🎄✨`;
+
+      const versiculoTexto = `“Porque un niño nos ha nacido,
+un hijo nos ha sido dado.”
+Isaías 9:6`;
+
+      const text = document.getElementById("text");
+      const firma = document.getElementById("firma");
+      const versiculo = document.getElementById("versiculo");
+
+      let i = 0;
+      let j = 0;
+
+      function escribir() {
+        if (i < mensaje.length) {
+          text.innerHTML += mensaje.charAt(i++);
+          setTimeout(escribir, esMovil ? 18 : 10);
+        } else {
+          firma.classList.add("show");
+          setTimeout(escribirVersiculo, 1200);
+        }
+      }
+
+      function escribirVersiculo() {
+        if (j < versiculoTexto.length) {
+          versiculo.innerHTML += versiculoTexto.charAt(j++);
+          setTimeout(escribirVersiculo, esMovil ? 20 : 12);
+        }
+      }
+
+      function iniciarExperiencia() {
+        document.getElementById("bell").play();
+
+        if (navigator.vibrate && esMovil) {
+          navigator.vibrate(200);
+        }
+
+        lanzarConfeti();
+
+        const countdown = document.getElementById("countdown");
+        countdown.style.display = "block";
+        countdown.textContent = "1";
+
+        setTimeout(mostrarCarta, 1000);
+        setTimeout(() => document.getElementById("music").play(), 4000);
+      }
+
+      function mostrarCarta() {
+        const start = document.getElementById("start");
+        start.style.opacity = 0;
+
+        setTimeout(() => {
+          start.style.display = "none";
+          document.getElementById("card").style.display = "block";
+          escribir();
+          setInterval(crearNieve, esMovil ? 800 : 350);
+        }, 1000);
+      }
+
+      function lanzarConfeti() {
+        const colores = ["#e63946", "#2a9d8f", "#ffffff"];
+        const cantidad = esMovil ? 20 : 40;
+
+        for (let i = 0; i < cantidad; i++) {
+          const confetti = document.createElement("div");
+          confetti.className = "confetti";
+          confetti.style.left = Math.random() * window.innerWidth + "px";
+          confetti.style.backgroundColor =
+            colores[Math.floor(Math.random() * colores.length)];
+          confetti.style.animationDuration = Math.random() * 1 + 1.5 + "s";
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 3000);
+        }
+      }
+
+      const emojis = ["🎄", "❄️", "⭐", "🎁"];
+
+      function crearNieve() {
+        const snow = document.createElement("div");
+        snow.className = "snow";
+        snow.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        snow.style.left = Math.random() * window.innerWidth + "px";
+        snow.style.animationDuration = Math.random() * 3 + 4 + "s";
+        document.body.appendChild(snow);
+        setTimeout(() => snow.remove(), 7000);
+      }
+    </script>
+  </body>
+</html>        padding: 20px;
       }
 
       .start h1 {
