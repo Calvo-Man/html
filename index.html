@@ -337,7 +337,7 @@ Isaías 9:6`;
           // usar textContent para evitar reflows/HTML injection
           text.textContent += mensaje.charAt(i++);
           // más lento: escritorio ~22ms, móvil ~28ms
-          setTimeout(escribir, esMovil ? 35 : 22);
+          setTimeout(escribir, esMovil ? 50 : 22);
         } else {
           firma.classList.add("show");
           setTimeout(escribirVersiculo, 1400);
@@ -348,7 +348,7 @@ Isaías 9:6`;
         if (j < versiculoTexto.length) {
           versiculo.textContent += versiculoTexto.charAt(j++);
           // versículo también más pausado: escritorio ~26ms, móvil ~36ms
-          setTimeout(escribirVersiculo, esMovil ? 36 : 26);
+          setTimeout(escribirVersiculo, esMovil ? 56 : 26);
         }
       }
 
